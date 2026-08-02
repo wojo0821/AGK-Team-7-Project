@@ -1,3 +1,4 @@
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,15 +13,19 @@ public class CharacterMove : MonoBehaviour
     private Rigidbody2D rb;
     [Header("Debug Status")]
     [SerializeField] private Vector2 movementInput;
-
+    private PhotonView view;
     private void Awake()
     {
+        view = GetComponent<PhotonView>();
         rb = GetComponent<Rigidbody2D>();
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        movementInput = context.ReadValue<Vector2>();
+        if (view.IsMine)
+        {
+            movementInput = context.ReadValue<Vector2>();
+        }
         if (movementInput.x > 0)
         {
             transform.localScale = new Vector3(1, 1, 1);
