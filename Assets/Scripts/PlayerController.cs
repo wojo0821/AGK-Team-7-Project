@@ -2,7 +2,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CharacterMove : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
 
@@ -10,7 +10,7 @@ public class CharacterMove : MonoBehaviour
     [SerializeField] private Animator animator;
 
     [Header("Movement")]
-    [SerializeField] private float speed = 10f;
+    [SerializeField] private float speed = 14f;
 
     
     [Header("Debug Status")]
@@ -19,7 +19,7 @@ public class CharacterMove : MonoBehaviour
     
     [Header("Jump")]
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private float jumpForce = 8f;
+    [SerializeField] private float jumpForce = 6f;
     private bool isGrounded;
     private float gravityScale;
 

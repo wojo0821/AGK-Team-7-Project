@@ -413,7 +413,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2479611801832485777}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 251c3f1d115d16b4b82fa77a40db277f, type: 3}
+  m_Script: {fileID: 11500000, guid: b8edd5e0e744c0f43b7c4382d9753a2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterMove
   animator: {fileID: 5784493512330822586}
