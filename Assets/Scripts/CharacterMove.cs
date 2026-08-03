@@ -4,20 +4,30 @@ using UnityEngine.InputSystem;
 
 public class CharacterMove : MonoBehaviour
 {
+    private Rigidbody2D rb;
+
     [Header("Animator")]
     [SerializeField] private Animator animator;
 
     [Header("Movement")]
     [SerializeField] private float speed = 10f;
 
-    private Rigidbody2D rb;
+    
     [Header("Debug Status")]
     [SerializeField] private Vector2 movementInput;
     private PhotonView view;
+    
+    [Header("Jump")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float jumpForce = 8f;
+    private bool isGrounded;
+    private float gravityScale;
+
     private void Awake()
     {
         view = GetComponent<PhotonView>();
         rb = GetComponent<Rigidbody2D>();
+        gravityScale = rb.gravityScale;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -35,6 +45,36 @@ public class CharacterMove : MonoBehaviour
             transform.localScale = new Vector3(-1, 1, 1);
         }
     }
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, LayerMask.GetMask("Ground"));
+        if (view.IsMine)
+        {
+            if (context.started && isGrounded)
+            {
+                rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+                rb.gravityScale = gravityScale * 0.5f;
+            }
+            else if (context.canceled)
+            {
+                rb.gravityScale = gravityScale;
+            }
+        }
+    }
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if (view.IsMine)
+        {
+            if (context.started)
+            {
+                speed *= 1.5f;
+            }
+            else if (context.canceled)
+            {
+                speed /= 1.5f;
+            }
+        }
+    }
 
     private void FixedUpdate()
     {
@@ -47,5 +87,10 @@ public class CharacterMove : MonoBehaviour
         {
             animator.SetInteger("X", (int)movementInput.x);
         }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(groundCheck.position, 0.2f);
     }
 }
