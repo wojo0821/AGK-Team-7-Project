@@ -29,6 +29,22 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         gravityScale = rb.gravityScale;
     }
+    private void Start()
+    {
+        // 시네마 카메라 따라오게 (Cinemachine 3.x 대응)
+        if (view.IsMine)
+        {
+            var vcam = FindFirstObjectByType<Unity.Cinemachine.CinemachineCamera>();
+            if (vcam != null)
+            {
+                vcam.Target.TrackingTarget = this.transform;
+            }
+            else
+            {
+                Debug.LogWarning("[PlayerController] CinemachineCamera를 찾지 못했습니다.");
+            }
+        }
+    }
 
     public void OnMove(InputAction.CallbackContext context)
     {
