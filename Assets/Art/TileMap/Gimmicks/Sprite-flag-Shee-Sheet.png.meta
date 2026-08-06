@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: f073a956742bdac40a2be5cb9ce2701c
+guid: af893296a90f04946a1d4b57292653d4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1822529624162706811
-    second: Sprite-floor2_0
+      213: 8314031675713637426
+    second: Sprite-flag-Shee-Sheet_0
+  - first:
+      213: 531079946835981900
+    second: Sprite-flag-Shee-Sheet_1
+  - first:
+      213: -5776782436239181868
+    second: Sprite-flag-Shee-Sheet_2
+  - first:
+      213: -2695155027460289368
+    second: Sprite-flag-Shee-Sheet_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,10 +109,32 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sprite-floor2_0
+      name: Sprite-flag-Shee-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
+        y: 0
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23cc14a62cf516370800000000000000
+      internalID: 8314031675713637426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-flag-Shee-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 31
         y: 0
         width: 32
         height: 32
@@ -115,8 +146,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 58ad72786f215b6e0800000000000000
-      internalID: -1822529624162706811
+      spriteID: c46fd7ad566ce5700800000000000000
+      internalID: 531079946835981900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-flag-Shee-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d77f3f1bfeb4dfa0800000000000000
+      internalID: -5776782436239181868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite-flag-Shee-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ac0f9538c2e89ad0800000000000000
+      internalID: -2695155027460289368
       vertices: []
       indices: 
       edges: []
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Sprite-floor2_0: -1822529624162706811
+      Sprite-flag-Shee-Sheet_0: 8314031675713637426
+      Sprite-flag-Shee-Sheet_1: 531079946835981900
+      Sprite-flag-Shee-Sheet_2: -5776782436239181868
+      Sprite-flag-Shee-Sheet_3: -2695155027460289368
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
