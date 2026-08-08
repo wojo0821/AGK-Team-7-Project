@@ -25,6 +25,10 @@ public class Checkpoint : MonoBehaviour
             return;
 
         activated = true;
+
+        if (flagRenderer != null)
+            flagRenderer.color = new Color(0.75f, 1f, 0.75f, 1f);
+
         playerRespawn.SetCheckpoint(respawnPoint.position);
 
         if (flagRenderer != null && activatedSprite != null)

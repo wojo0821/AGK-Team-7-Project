@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1856112009029485428}
   - component: {fileID: 6987585652433741479}
   - component: {fileID: 200323904299303688}
+  - component: {fileID: 5206307418663548831}
   m_Layer: 0
   m_Name: SpawnPoint
   m_TagString: Untagged
@@ -152,5 +153,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Checkpoint
   respawnPoint: {fileID: 3076359080922591720}
-  flagRenderer: {fileID: 0}
+  flagRenderer: {fileID: 1856112009029485428}
   activatedSprite: {fileID: 0}
+--- !u!95 &5206307418663548831
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7458708991874950377}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6ce49e94e78853c4c8d223cbf4e0c635, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
