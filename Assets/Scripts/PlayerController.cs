@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     
     [Header("Jump")]
     [SerializeField] private Transform groundCheck;
+    [SerializeField] private Vector2 groundCheckSize = new Vector2(0.2f, 0.2f);
     [SerializeField] private float jumpForce = 6f;
     private bool isGrounded;
     private float gravityScale;
@@ -63,7 +64,7 @@ public class PlayerController : MonoBehaviour
     }
     public void OnJump(InputAction.CallbackContext context)
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, LayerMask.GetMask("Ground"));
+        isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, LayerMask.GetMask("Ground"));
         if (view.IsMine)
         {
             if (context.started && isGrounded)
@@ -107,6 +108,6 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(groundCheck.position, 0.2f);
+        Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
     }
 }
