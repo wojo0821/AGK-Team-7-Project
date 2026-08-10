@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
             if (context.started && isGrounded)
             {
                 rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
-                rb.gravityScale = gravityScale * 0.5f;
+                rb.gravityScale = gravityScale * 0.6f;
             }
             else if (context.canceled)
             {
@@ -84,11 +84,11 @@ public class PlayerController : MonoBehaviour
         {
             if (context.started)
             {
-                speed *= 1.5f;
+                speed += 1.5f;
             }
             else if (context.canceled)
             {
-                speed /= 1.5f;
+                speed -= 1.5f;
             }
         }
     }
