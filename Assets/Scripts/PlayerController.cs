@@ -84,11 +84,11 @@ public class PlayerController : MonoBehaviour
         {
             if (context.started)
             {
-                speed += 1.5f;
+                speed += 2f;
             }
             else if (context.canceled)
             {
-                speed -= 1.5f;
+                speed -= 2f;
             }
         }
     }
