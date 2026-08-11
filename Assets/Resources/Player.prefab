@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7708544211858583030}
   - component: {fileID: -3573996907195320821}
-  - component: {fileID: 1792825576922776382}
   - component: {fileID: 1438553028210964047}
+  - component: {fileID: 123684661662271713}
   - component: {fileID: -8385173650621246667}
   - component: {fileID: 5784493512330822586}
   - component: {fileID: 8828872840556653424}
@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 1628253018888023158}
   - component: {fileID: -3722729496493864331}
   - component: {fileID: 8600199826843102533}
+  - component: {fileID: -2731008902677499032}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -61,27 +62,12 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 1792825576922776382}
+  - {fileID: 123684661662271713}
   - {fileID: -8385173650621246667}
+  - {fileID: -2731008902677499032}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1792825576922776382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2479611801832485777}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonTransformView
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 1
-  m_UseLocal: 1
 --- !u!50 &1438553028210964047
 Rigidbody2D:
   serializedVersion: 5
@@ -109,6 +95,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &123684661662271713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2479611801832485777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce8d8fa858bad5048aed03e6ee205690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerColorSync
 --- !u!114 &-8385173650621246667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,7 +126,7 @@ MonoBehaviour:
     SynchronizeType: 0
     Name: Blend
   - Type: 3
-    SynchronizeType: 0
+    SynchronizeType: 2
     Name: X
   m_SynchronizeLayers:
   - SynchronizeType: 0
@@ -444,6 +442,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.65780365, y: 0.93057454}
   m_EdgeRadius: 0
+--- !u!114 &-2731008902677499032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2479611801832485777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonTransformView
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &9198738315168269496
 GameObject:
   m_ObjectHideFlags: 0

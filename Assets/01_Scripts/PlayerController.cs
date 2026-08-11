@@ -52,14 +52,15 @@ public class PlayerController : MonoBehaviour
         if (view.IsMine)
         {
             movementInput = context.ReadValue<Vector2>();
-        }
-        if (movementInput.x > 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-        else if (movementInput.x < 0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
+
+            if (movementInput.x > 0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else if (movementInput.x < 0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
         }
     }
     public void OnJump(InputAction.CallbackContext context)
@@ -95,11 +96,14 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!view.IsMine) return;
         rb.linearVelocity = new Vector2(movementInput.x * speed, rb.linearVelocity.y);
     }
 
     private void Update()
     {
+        if (!view.IsMine) return;
+
         if (animator != null)
         {
             animator.SetInteger("X", (int)movementInput.x);

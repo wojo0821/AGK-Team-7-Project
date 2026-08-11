@@ -1,19 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using ExitGames.Client.Photon;
 
-public class ChooseCharacterStyle : MonoBehaviour
+public class ChooseCharacterStyle : MonoBehaviourPunCallbacks
 {
     Image childImage;
-    public static Color playerColor;
-    private void Awake()
+    public static Color CharacterColor;
+    [SerializeField] private int styleId;
+
+    private void Start()
     {
         childImage = transform.GetChild(0).GetComponent<Image>();
     }
+
     public void OnClick()
     {
-        playerColor = childImage.color;
-        Debug.Log("Player Color: " + playerColor);
+        CharacterColor = childImage.color;
         SceneManager.LoadScene("SampleScene");
     }
 }

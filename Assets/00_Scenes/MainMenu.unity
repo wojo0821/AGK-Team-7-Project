@@ -351,6 +351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af9df10de4759d041a338a4983f4c950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChooseCharacterStyle
+  styleId: 0
 --- !u!114 &82282522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -497,6 +498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af9df10de4759d041a338a4983f4c950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChooseCharacterStyle
+  styleId: 2
 --- !u!114 &103793262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,6 +645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af9df10de4759d041a338a4983f4c950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChooseCharacterStyle
+  styleId: 4
 --- !u!114 &179576492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1530,6 +1533,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af9df10de4759d041a338a4983f4c950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChooseCharacterStyle
+  styleId: 1
 --- !u!114 &1294929806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2026,6 +2030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af9df10de4759d041a338a4983f4c950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChooseCharacterStyle
+  styleId: 3
 --- !u!114 &2118527870
 MonoBehaviour:
   m_ObjectHideFlags: 0

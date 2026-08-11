@@ -10666,50 +10666,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1336557904477914777, guid: 7a9521c9e3bfbac449a76a6a290a9a47, type: 3}
   m_PrefabInstance: {fileID: 311532876}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1877535890
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1877535892}
-  - component: {fileID: 1877535891}
-  m_Layer: 0
-  m_Name: PhotonManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1877535891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877535890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80698f1c09b3f874984dfc46c908f9e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PhotonManager
---- !u!4 &1877535892
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877535890}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.70377, y: 0.47965, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1930853993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10829,6 +10785,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3076359080922591720, guid: 4db387281e6a8f14fbfd5c29f9b7ce83, type: 3}
   m_PrefabInstance: {fileID: 1949245562}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2060096668
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2060096670}
+  - component: {fileID: 2060096669}
+  m_Layer: 0
+  m_Name: PhotonManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2060096669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060096668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80698f1c09b3f874984dfc46c908f9e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotonManager
+--- !u!4 &2060096670
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2060096668}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.90022, y: 0.04326, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2074712236
 GameObject:
   m_ObjectHideFlags: 0
@@ -41746,8 +41746,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 619394802}
-  - {fileID: 1877535892}
   - {fileID: 2074712238}
   - {fileID: 253070343}
   - {fileID: 1824775317}
   - {fileID: 139858842}
+  - {fileID: 2060096670}
