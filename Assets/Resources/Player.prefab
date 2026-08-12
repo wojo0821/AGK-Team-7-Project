@@ -127,8 +127,11 @@ MonoBehaviour:
     SynchronizeType: 0
     Name: Blend
   - Type: 3
-    SynchronizeType: 2
+    SynchronizeType: 0
     Name: X
+  - Type: 9
+    SynchronizeType: 0
+    Name: Push
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -472,7 +475,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPush
   pushRange: 1.2
-  pushForce: 8
+  pushDistance: 1
+  pushCooldown: 0.8
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  collisionPadding: 0.02
+  animator: {fileID: 5784493512330822586}
 --- !u!1 &9198738315168269496
 GameObject:
   m_ObjectHideFlags: 0

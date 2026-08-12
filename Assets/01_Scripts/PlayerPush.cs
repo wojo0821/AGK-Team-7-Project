@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,26 +12,84 @@ public class PlayerPush : MonoBehaviourPun
     [SerializeField] private float pushDistance = 1f;
     [SerializeField] private float pushCooldown = 0.8f;
 
+    [Header("막히는 지형 레이어")]
+    [SerializeField] private LayerMask obstacleLayer;
+    [SerializeField] private float collisionPadding = 0.02f;
+
+    [Header("애니메이션")]
+    [SerializeField] private Animator animator;
+
     private Rigidbody2D rb;
     private float nextPushTime;
+
+    private bool hasPendingPush;
+    private float pendingDirection;
+
+    private readonly RaycastHit2D[] castHits = new RaycastHit2D[8];
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (animator == null)
+            animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        // 내 플레이어만 F 입력 처리
         if (!photonView.IsMine)
             return;
 
-        if (Keyboard.current != null &&
-            Keyboard.current.fKey.wasPressedThisFrame &&
-            Time.time >= nextPushTime)
+        if (Keyboard.current == null ||
+            !Keyboard.current.fKey.wasPressedThisFrame ||
+            Time.time < nextPushTime)
         {
-            nextPushTime = Time.time + pushCooldown;
-            TryPush();
+            return;
+        }
+
+        nextPushTime = Time.time + pushCooldown;
+        TryPush();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!photonView.IsMine || !hasPendingPush)
+            return;
+
+        hasPendingPush = false;
+
+        Vector2 moveDirection = Vector2.right * pendingDirection;
+
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useLayerMask = true;
+        filter.layerMask = obstacleLayer;
+        filter.useTriggers = false;
+
+        int hitCount = rb.Cast(
+            moveDirection,
+            filter,
+            castHits,
+            pushDistance + collisionPadding
+        );
+
+        float allowedDistance = pushDistance;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            if (castHits[i].distance > 0f)
+            {
+                allowedDistance = Mathf.Min(
+                    allowedDistance,
+                    castHits[i].distance - collisionPadding
+                );
+            }
+        }
+
+        if (allowedDistance > 0f)
+        {
+            rb.MovePosition(
+                rb.position + moveDirection * allowedDistance
+            );
         }
     }
 
@@ -49,8 +108,10 @@ public class PlayerPush : MonoBehaviourPun
             if (target == null || target == this)
                 continue;
 
-            float distance =
-                Vector2.Distance(transform.position, target.transform.position);
+            float distance = Vector2.Distance(
+                transform.position,
+                target.transform.position
+            );
 
             if (distance < closestDistance)
             {
@@ -62,29 +123,47 @@ public class PlayerPush : MonoBehaviourPun
         if (closestPlayer == null)
             return;
 
-        float horizontalDirection =
-            Mathf.Sign(closestPlayer.transform.position.x - transform.position.x);
+        float direction = Mathf.Sign(
+            closestPlayer.transform.position.x - transform.position.x
+        );
 
-        if (horizontalDirection == 0f)
+        if (direction == 0f)
             return;
 
+        PlayPushAnimation();
+
+        photonView.RPC(
+            nameof(RPC_PlayPushAnimation),
+            RpcTarget.Others
+        );
+
         closestPlayer.photonView.RPC(
-            nameof(RPC_ApplyPush),
+            nameof(RPC_RequestPush),
             closestPlayer.photonView.Owner,
-            horizontalDirection
+            direction
         );
     }
 
+    private void PlayPushAnimation()
+    {
+        if (animator != null)
+            animator.SetTrigger("Push");
+    }
+
     [PunRPC]
-    private void RPC_ApplyPush(float horizontalDirection)
+    private void RPC_PlayPushAnimation()
+    {
+        PlayPushAnimation();
+    }
+
+    [PunRPC]
+    private void RPC_RequestPush(float direction)
     {
         if (!photonView.IsMine)
             return;
 
-        Vector2 nextPosition = rb.position +
-            Vector2.right * horizontalDirection * pushDistance;
-
-        rb.position = nextPosition;
+        pendingDirection = direction;
+        hasPendingPush = true;
     }
 
     private void OnDrawGizmosSelected()
