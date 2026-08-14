@@ -42,6 +42,7 @@ MonoBehaviour:
   - RPC_ApplyPush
   - RPC_PlayPushAnimation
   - RPC_RequestPush
+  - RPC_SetPushedAnimation
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
