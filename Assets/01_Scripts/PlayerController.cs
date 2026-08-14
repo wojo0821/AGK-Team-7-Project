@@ -29,6 +29,12 @@ public class PlayerController : MonoBehaviour
         view = GetComponent<PhotonView>();
         rb = GetComponent<Rigidbody2D>();
         gravityScale = rb.gravityScale;
+
+        if (!view.IsMine)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.linearVelocity = Vector2.zero;
+        }
     }
     private void Start()
     {

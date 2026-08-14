@@ -7,6 +7,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 {
     void Start()
     {
+        PhotonNetwork.SendRate = 30;
+        PhotonNetwork.SerializationRate = 30;
+
         PhotonNetwork.ConnectUsingSettings();
     }
 
