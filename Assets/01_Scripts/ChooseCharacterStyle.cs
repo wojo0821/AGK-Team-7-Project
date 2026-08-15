@@ -7,7 +7,7 @@ using ExitGames.Client.Photon;
 public class ChooseCharacterStyle : MonoBehaviourPunCallbacks
 {
     Image childImage;
-    public static Color CharacterColor;
+    public static Color CharacterColor = Color.white;
     [SerializeField] private int styleId;
 
     private void Start()

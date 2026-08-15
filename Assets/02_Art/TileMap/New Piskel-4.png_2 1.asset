@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: New Piskel-4.png_2 1
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
   m_Sprite: {fileID: 2130487451, guid: 09d582472405a4a46aad4235a8f3a2d9, type: 3}
-  m_Color: {r: 1, g: 0.33490568, b: 0.82689756, a: 1}
+  m_Color: {r: 1, g: 0.7311321, b: 0.929642, a: 1}
   m_Transform:
     e00: 1
     e01: 0

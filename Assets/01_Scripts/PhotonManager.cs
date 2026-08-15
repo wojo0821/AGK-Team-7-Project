@@ -40,7 +40,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         Vector2 playerPos = new Vector2(Random.Range(-5f, 5f), 0);
         GameObject player = PhotonNetwork.Instantiate("Player", playerPos, Quaternion.identity);
-
         player.GetComponent<SpriteRenderer>().color = ChooseCharacterStyle.CharacterColor;
     }
 }
