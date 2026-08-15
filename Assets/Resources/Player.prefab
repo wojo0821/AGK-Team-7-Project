@@ -215,6 +215,9 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 0
     Name: Push
+  - Type: 4
+    SynchronizeType: 0
+    Name: IsPushed
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -414,13 +417,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb8b7daaba41a94b980548e70e20de2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPush
-  pushRange: 1.2
-  pushDistance: 1
+  basePushRange: 1.2
+  basePushDistance: 1
   pushCooldown: 0.8
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  collisionPadding: 0.02
+  pushForce: 8
+  swordObject: {fileID: 0}
+  swordPushRange: 3
+  swordPushDistance: 2.2
   animator: {fileID: 5784493512330822586}
 --- !u!61 &8600199826843102533
 BoxCollider2D:

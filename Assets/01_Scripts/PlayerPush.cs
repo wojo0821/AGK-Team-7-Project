@@ -7,11 +7,16 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PhotonView))]
 public class PlayerPush : MonoBehaviourPun
 {
-    [Header("밀치기 설정")]
-    [SerializeField] private float pushRange = 1.2f;
-    [SerializeField] private float pushDistance = 1f;
+    [Header("기본 밀치기 설정")]
+    [SerializeField] private float basePushRange = 1.2f;
+    [SerializeField] private float basePushDistance = 1f;
     [SerializeField] private float pushCooldown = 0.8f;
-    [SerializeField] private float pushSpeed = 6f; // 초당 이동 속도 (클수록 빨리 밀림)
+    [SerializeField] private float pushSpeed = 8f; // 밀쳐지는 이동 속도
+
+    [Header("칼(무기) 장착 시 설정")]
+    [SerializeField] private GameObject swordObject; // 플레이어 손에 붙은 칼 큐브
+    [SerializeField] private float swordPushRange = 3.0f;   // 칼 장착 시 증가하는 범위
+    [SerializeField] private float swordPushDistance = 3.5f; // 칼 장착 시 증가하는 밀쳐지는 거리
 
     [Header("막히는 지형 레이어")]
     [SerializeField] private LayerMask obstacleLayer;
@@ -25,15 +30,22 @@ public class PlayerPush : MonoBehaviourPun
     private Rigidbody2D rb;
     private float nextPushTime;
 
-    private bool hasPendingPush;
-    private float pendingDirection;
-
-    // 밀리는 중 상태 (여러 FixedUpdate에 걸쳐 조금씩 이동)
+    // 밀리는 중 상태 외부 공개 (이동 스크립트 제어용)
     private bool isBeingPushed;
+    public bool IsBeingPushed => isBeingPushed;
+
     private float pushDirectionSign;
     private float remainingPushDistance;
 
+    // 칼 장착 여부
+    private bool hasSword = false;
+    public bool HasSword => hasSword;
+
     private readonly RaycastHit2D[] castHits = new RaycastHit2D[8];
+
+    // 현재 칼 소지 여부에 따른 밀치기 범위와 거리 반환
+    public float CurrentPushRange => hasSword ? swordPushRange : basePushRange;
+    public float CurrentPushDistance => hasSword ? swordPushDistance : basePushDistance;
 
     private void Awake()
     {
@@ -41,6 +53,8 @@ public class PlayerPush : MonoBehaviourPun
 
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        UpdateSwordVisibility();
     }
 
     private void Update()
@@ -48,6 +62,7 @@ public class PlayerPush : MonoBehaviourPun
         if (!photonView.IsMine)
             return;
 
+        // F 키로 밀치기
         if (Keyboard.current == null ||
             !Keyboard.current.fKey.wasPressedThisFrame ||
             Time.time < nextPushTime)
@@ -61,34 +76,14 @@ public class PlayerPush : MonoBehaviourPun
 
     private void FixedUpdate()
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine || !isBeingPushed)
             return;
 
-        // 새로 요청된 밀치기가 있으면 이동 상태 시작 (밀리는 사람 본인 클라이언트에서 실행됨)
-        if (hasPendingPush)
-        {
-            hasPendingPush = false;
+        // 한 프레임에 이동시킬 거리 계산
+        float step = pushSpeed * Time.fixedDeltaTime;
+        float actualMoveDistance = Mathf.Min(step, remainingPushDistance);
 
-            isBeingPushed = true;
-            pushDirectionSign = pendingDirection;
-            remainingPushDistance = pushDistance;
-
-            SetPushedAnimation(true);
-
-            photonView.RPC(
-                nameof(RPC_SetPushedAnimation),
-                RpcTarget.Others,
-                true
-            );
-        }
-
-        if (!isBeingPushed)
-            return;
-
-        // 이번 프레임에 이동할 거리 (속도 * 시간), 남은 거리를 넘지 않도록 클램프
-        float step = Mathf.Min(pushSpeed * Time.fixedDeltaTime, remainingPushDistance);
-
-        if (step <= 0f)
+        if (actualMoveDistance <= 0f)
         {
             EndPush();
             return;
@@ -105,10 +100,10 @@ public class PlayerPush : MonoBehaviourPun
             moveDirection,
             filter,
             castHits,
-            step + collisionPadding
+            actualMoveDistance + collisionPadding
         );
 
-        float allowedDistance = step;
+        float allowedDistance = actualMoveDistance;
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -123,15 +118,13 @@ public class PlayerPush : MonoBehaviourPun
 
         if (allowedDistance > 0f)
         {
-            rb.MovePosition(
-                rb.position + moveDirection * allowedDistance
-            );
+            rb.MovePosition(rb.position + moveDirection * allowedDistance);
         }
 
-        remainingPushDistance -= step;
+        remainingPushDistance -= actualMoveDistance;
 
-        // 장애물에 막혔거나 남은 거리를 다 이동했으면 종료
-        if (allowedDistance < step - 0.0001f || remainingPushDistance <= 0f)
+        // 장애물에 막혔거나 계산된 거리를 모두 이동했으면 끝
+        if (allowedDistance < actualMoveDistance - 0.0001f || remainingPushDistance <= 0f)
         {
             EndPush();
         }
@@ -140,6 +133,8 @@ public class PlayerPush : MonoBehaviourPun
     private void EndPush()
     {
         isBeingPushed = false;
+        remainingPushDistance = 0f;
+
         SetPushedAnimation(false);
 
         photonView.RPC(
@@ -151,8 +146,13 @@ public class PlayerPush : MonoBehaviourPun
 
     private void TryPush()
     {
-        Collider2D[] hits =
-            Physics2D.OverlapCircleAll(transform.position, pushRange);
+        // 1. 현재 미는 순간의 수치를 미리 완전 독립된 변수로 저장 (원인 1 차단)
+        float targetRange = CurrentPushRange;
+        float targetPushDistance = CurrentPushDistance;
+        bool wasHoldingSword = hasSword;
+
+        // 2. 범위를 내 스탯(targetRange)으로 측정
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, targetRange);
 
         PlayerPush closestPlayer = null;
         float closestDistance = float.MaxValue;
@@ -176,30 +176,41 @@ public class PlayerPush : MonoBehaviourPun
             }
         }
 
-        if (closestPlayer == null)
-            return;
-
-        float direction = Mathf.Sign(
-            closestPlayer.transform.position.x - transform.position.x
-        );
-
-        if (direction == 0f)
-            return;
-
-        // 미는 사람(나): 기존 그대로 트리거 애니메이션 재생
+        // 밀치기 동작 애니메이션 재생
         PlayPushAnimation();
+        photonView.RPC(nameof(RPC_PlayPushAnimation), RpcTarget.Others);
 
-        photonView.RPC(
-            nameof(RPC_PlayPushAnimation),
-            RpcTarget.Others
-        );
+        // 3. 타겟이 있으면 정확한 밀치기 수치 전달
+        if (closestPlayer != null)
+        {
+            float direction = Mathf.Sign(
+                closestPlayer.transform.position.x - transform.position.x
+            );
 
-        // 밀리는 사람: 이동 + 새로 추가된 반복 애니메이션 요청
-        closestPlayer.photonView.RPC(
-            nameof(RPC_RequestPush),
-            closestPlayer.photonView.Owner,
-            direction
-        );
+            if (direction != 0f)
+            {
+                closestPlayer.photonView.RPC(
+                    nameof(RPC_RequestPush),
+                    closestPlayer.photonView.Owner,
+                    direction,
+                    targetPushDistance // 정확히 계산된 칼 거리가 넘어감
+                );
+            }
+        }
+
+        // 4. 밀치기 처리가 완벽히 끝난 후에 칼 해제 RPC 실행
+        if (wasHoldingSword)
+        {
+            photonView.RPC(nameof(RPC_EquipSword), RpcTarget.All, false);
+        }
+    }
+
+    private void UpdateSwordVisibility()
+    {
+        if (swordObject != null)
+        {
+            swordObject.SetActive(hasSword);
+        }
     }
 
     private void PlayPushAnimation()
@@ -215,6 +226,13 @@ public class PlayerPush : MonoBehaviourPun
     }
 
     [PunRPC]
+    public void RPC_EquipSword(bool equip)
+    {
+        hasSword = equip;
+        UpdateSwordVisibility();
+    }
+
+    [PunRPC]
     private void RPC_PlayPushAnimation()
     {
         PlayPushAnimation();
@@ -227,18 +245,23 @@ public class PlayerPush : MonoBehaviourPun
     }
 
     [PunRPC]
-    private void RPC_RequestPush(float direction)
+    private void RPC_RequestPush(float direction, float distance)
     {
         if (!photonView.IsMine)
             return;
 
-        pendingDirection = direction;
-        hasPendingPush = true;
+        // 이전에 밀리던 것이 있더라도 즉시 끊고 새로운 수치(칼 밀치기 전체 거리)로 갱신
+        pushDirectionSign = direction;
+        remainingPushDistance = distance;
+        isBeingPushed = true;
+
+        SetPushedAnimation(true);
+        photonView.RPC(nameof(RPC_SetPushedAnimation), RpcTarget.Others, true);
     }
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, pushRange);
+        Gizmos.color = hasSword ? Color.red : Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, CurrentPushRange);
     }
 }
