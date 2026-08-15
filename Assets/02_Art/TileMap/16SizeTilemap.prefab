@@ -79,6 +79,7 @@ Transform:
   - {fileID: 1530477740171427420}
   - {fileID: 4931067506491653443}
   - {fileID: 1046637539199042820}
+  - {fileID: 3921644249707267226}
   m_Father: {fileID: 6957179048563324119}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &593523052988604733
@@ -196,7 +197,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   - serializedVersion: 2
     m_RefCount: 1
-    m_Data: {r: 1, g: 0.5801887, b: 0.891343, a: 1}
+    m_Data: {r: 1, g: 0.7311321, b: 0.929642, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -347,6 +348,72 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1336557904477914777, guid: 7a9521c9e3bfbac449a76a6a290a9a47, type: 3}
   m_PrefabInstance: {fileID: 2020444007618429853}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2763010639558133290
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 417277769050565755}
+    m_Modifications:
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8119912909179547048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_Name
+      value: SlimeBlock
+      objectReference: {fileID: 0}
+    - target: {fileID: 8922048830832698076, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+--- !u!4 &3921644249707267226 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1167651814191760048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+  m_PrefabInstance: {fileID: 2763010639558133290}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4579093391681212340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -487,7 +554,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1336557904477914777, guid: cbfb8ed09efd7e146b73d957ead54e28, type: 3}
   m_PrefabInstance: {fileID: 6260781456344382426}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3768982840500235582
+--- !u!114 &8134046766910862594
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
