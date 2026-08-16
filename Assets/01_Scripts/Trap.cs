@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Spike : MonoBehaviour
+public class Trap : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)
     {

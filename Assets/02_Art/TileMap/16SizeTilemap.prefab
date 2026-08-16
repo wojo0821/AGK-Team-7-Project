@@ -101,6 +101,16 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
+  - first: {x: 1, y: -2, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 5
+      m_TileSpriteIndex: 1
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 2
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
   - first: {x: 0, y: -1, z: 0}
     second:
       serializedVersion: 2
@@ -158,12 +168,15 @@ Tilemap:
   - serializedVersion: 2
     m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 3f4204eacb5a93d4dbff1c856eecb71f, type: 2}
+  - serializedVersion: 2
+    m_RefCount: 1
+    m_Data: {fileID: 11400000, guid: 43d246294dce75847a22791f6ca8eccd, type: 2}
   m_TileSpriteArray:
   - serializedVersion: 2
     m_RefCount: 1
     m_Data: {fileID: 6948402585382724860, guid: 09d582472405a4a46aad4235a8f3a2d9, type: 3}
   - serializedVersion: 2
-    m_RefCount: 2
+    m_RefCount: 3
     m_Data: {fileID: 2130487451, guid: 09d582472405a4a46aad4235a8f3a2d9, type: 3}
   - serializedVersion: 2
     m_RefCount: 1
@@ -173,7 +186,7 @@ Tilemap:
     m_Data: {fileID: -74625172, guid: 09d582472405a4a46aad4235a8f3a2d9, type: 3}
   m_TileMatrixArray:
   - serializedVersion: 2
-    m_RefCount: 5
+    m_RefCount: 6
     m_Data:
       e00: 1
       e01: 0
@@ -198,6 +211,9 @@ Tilemap:
   - serializedVersion: 2
     m_RefCount: 1
     m_Data: {r: 1, g: 0.7311321, b: 0.929642, a: 1}
+  - serializedVersion: 2
+    m_RefCount: 1
+    m_Data: {r: 1, g: 0.19733953, b: 0.18396229, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -400,8 +416,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: SlimeBlock
       objectReference: {fileID: 0}
+    - target: {fileID: 8119912909179547048, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8922048830832698076, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
       propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8922048830832698076, guid: 9e0577fd2906c1d438889551d2be03f2, type: 3}
+      propertyPath: m_LightProbeUsage
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -554,7 +578,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1336557904477914777, guid: cbfb8ed09efd7e146b73d957ead54e28, type: 3}
   m_PrefabInstance: {fileID: 6260781456344382426}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8134046766910862594
+--- !u!114 &4641410869542905979
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
