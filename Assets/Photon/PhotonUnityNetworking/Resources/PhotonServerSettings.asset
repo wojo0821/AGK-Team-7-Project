@@ -45,6 +45,10 @@ MonoBehaviour:
   - RPC_SetPushedAnimation
   - RPC_EquipSword
   - RPC_ApplyPushImpulse
+  - RPC_EquipGun
+  - RPC_EquipWeapon
+  - RPC_SpawnBullet
+  - RPC_HideItem
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &31135518666321505
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3193205977358345651}
+  m_Layer: 7
+  m_Name: HandPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3193205977358345651
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31135518666321505}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.279, y: 0.359, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7708544211858583030}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2479611801832485777
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,6 +74,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7918236388401690907}
+  - {fileID: 3193205977358345651}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8828872840556653424
@@ -420,10 +452,17 @@ MonoBehaviour:
   basePushRange: 1.2
   basePushDistance: 1
   pushCooldown: 0.8
-  pushForce: 8
-  swordObject: {fileID: 0}
+  pushSpeed: 8
+  handPoint: {fileID: 3193205977358345651}
+  swordPrefab: {fileID: 6050044798759040282, guid: 6ab08a183fa2eb948a7e857904411aaa, type: 3}
+  gunPrefab: {fileID: 3895653623656632806, guid: 1a7be4cf8e7aa61429a28e17a6266642, type: 3}
   swordPushRange: 3
   swordPushDistance: 2.2
+  gunPushDistance: 5
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  collisionPadding: 0.02
   animator: {fileID: 5784493512330822586}
 --- !u!61 &8600199826843102533
 BoxCollider2D:
