@@ -108,10 +108,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Lazer
   lazer: {fileID: 8918807387698415623, guid: 42f5ce4d36020df4190826e81151f258, type: 3}
   isAlwaysOn: 1
+  isAutoRotation: 0
+  rotationSpeed: 90
   onTime: 2
   offTime: 2
   lazerSize: {x: 7.18, y: 1}
-  zDirection: 0
+  zDirection: -90
 --- !u!50 &7095662426232149278
 Rigidbody2D:
   serializedVersion: 5
