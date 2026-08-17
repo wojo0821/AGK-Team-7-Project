@@ -9,6 +9,7 @@ public class LazerSpawner : MonoBehaviour
     [SerializeField] private bool isAlwaysOn = true;
     [SerializeField] private bool isAutoRotation = false;
     [SerializeField] private float rotationSpeed = 90f;
+    [SerializeField] private float waitTime = 0f;
     [SerializeField] private float onTime = 2f;
     [SerializeField] private float offTime = 2f;
     [SerializeField] private Vector2 lazerSize;
@@ -18,6 +19,9 @@ public class LazerSpawner : MonoBehaviour
 
     private void Start()
     {
+        newLazer = Instantiate(lazer, new Vector3(transform.position.x, transform.position.y, 0), Quaternion.Euler(0, 0, zDirection));
+        newLazer.transform.localScale = new Vector3(lazerSize.x, lazerSize.y, 1);
+        newLazer.SetActive(false);
         if (isAlwaysOn)
         {
             LazerOn();
@@ -38,20 +42,21 @@ public class LazerSpawner : MonoBehaviour
     {
         while (true)
         {
+            yield return new WaitForSeconds(waitTime);
             LazerOn();
             yield return new WaitForSeconds(onTime);
             LazerOff();
+            waitTime = 0;
             yield return new WaitForSeconds(offTime);
         }
     }
     private void LazerOn()
     {
-        newLazer = Instantiate(lazer, new Vector3(transform.position.x, transform.position.y, 0), Quaternion.Euler(0, 0, zDirection));
-        newLazer.transform.localScale = new Vector3(lazerSize.x, lazerSize.y, 1);
+        newLazer.SetActive(true);
     }
     private void LazerOff()
     {
-        Destroy(newLazer);
+        newLazer.SetActive(false);
     }
     void OnDrawGizmos()
     {
