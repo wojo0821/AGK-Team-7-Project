@@ -31,11 +31,11 @@ public class LazerSpawner : MonoBehaviour
             StartCoroutine(LazerRoutine());
         }
     }
-    private void FixedUpdate()
+    private void Update()
     {
         if (isAutoRotation)
         {
-            newLazer.transform.Rotate(0, 0, rotationSpeed * Time.fixedDeltaTime);
+            newLazer.transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
         }
     }
     IEnumerator LazerRoutine()
