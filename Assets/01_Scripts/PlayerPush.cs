@@ -22,8 +22,13 @@ public class PlayerPush : MonoBehaviourPun
 
     [Header("무기 손 위치 및 프리팹 설정")]
     [SerializeField] private Transform handPoint;      // 손 위치 기준점 (Hierarchy의 HandPoint)
-    [SerializeField] private GameObject swordPrefab;   // Project 창의 칼 프리팹
-    [SerializeField] private GameObject gunPrefab;     // Project 창의 총 프리팹
+    [SerializeField] private GameObject swordPrefab;   // 손에 장착될 칼 프리팹
+    [SerializeField] private GameObject gunPrefab;     // 손에 장착될 총 프리팹
+
+    [Header("바닥 드롭용 프리팹 설정 (인스펙터 할당 가능)")]
+    [SerializeField] private GameObject swordDropPrefab; // 바닥 드롭용 칼 프리팹
+    [SerializeField] private GameObject gunDropPrefab;   // 바닥 드롭용 총 프리팹
+    [SerializeField] private Vector3 weaponDropOffset = Vector3.zero; // 플레이어 몸쪽 오프셋
 
     [Header("칼(무기) 설정")]
     [SerializeField] private float swordPushRange = 3.0f;
@@ -56,7 +61,6 @@ public class PlayerPush : MonoBehaviourPun
     public bool HasSword => currentWeapon == WeaponType.Sword;
     public bool HasGun => currentWeapon == WeaponType.Gun;
 
-    // 현재 손에 동적으로 생성되어 쥐어지고 있는 무기 오브젝트 참조
     private GameObject currentSpawnedWeapon;
     private Transform gunFirePoint;
 
@@ -109,8 +113,8 @@ public class PlayerPush : MonoBehaviourPun
             facingDirection = Mathf.Sign(transform.localScale.x);
         }
 
-        if (Keyboard.current == null ||
-            !Keyboard.current.fKey.wasPressedThisFrame ||
+        if (Mouse.current == null ||
+            !Mouse.current.leftButton.wasPressedThisFrame ||
             Time.time < nextPushTime)
         {
             return;
@@ -254,10 +258,9 @@ public class PlayerPush : MonoBehaviourPun
             }
         }
 
-        // 사용 후 무기 해제
         if (usedWeapon != WeaponType.None)
         {
-            photonView.RPC(nameof(RPC_EquipWeapon), RpcTarget.All, (int)WeaponType.None);
+            photonView.RPC(nameof(RPC_EquipWeaponDirect), RpcTarget.All, (int)WeaponType.None);
         }
     }
 
@@ -287,16 +290,77 @@ public class PlayerPush : MonoBehaviourPun
         bullet.Init(direction, pushDist, photonView);
     }
 
-    // 프리팹을 활용한 손 무기 생성/파괴 처리
+    private void DropWeapon(WeaponType weaponToDrop)
+    {
+        if (weaponToDrop == WeaponType.None) return;
+
+        Vector3 dropPos = transform.position + weaponDropOffset;
+        int targetWeapon = (int)weaponToDrop;
+
+        int uniqueItemId = (int)(Time.time * 1000f) + Random.Range(1, 100000);
+
+        photonView.RPC(nameof(RPC_SpawnDropItem), RpcTarget.All, targetWeapon, dropPos, uniqueItemId);
+    }
+
+    [PunRPC]
+    private void RPC_SpawnDropItem(int weaponType, Vector3 position, int itemId)
+    {
+        GameObject dropPrefab = null;
+
+        if (weaponType == (int)WeaponType.Sword) dropPrefab = swordDropPrefab;
+        else if (weaponType == (int)WeaponType.Gun) dropPrefab = gunDropPrefab;
+
+        if (dropPrefab != null)
+        {
+            GameObject spawnedItem = Instantiate(dropPrefab, position, Quaternion.identity);
+
+            SwordItem sword = spawnedItem.GetComponent<SwordItem>();
+            if (sword != null)
+            {
+                sword.ItemId = itemId;
+                sword.ResetPickupCooldown(); // 새로 드롭된 아이템에 쿨다운 재설정
+            }
+
+            GunItem gun = spawnedItem.GetComponent<GunItem>();
+            if (gun != null)
+            {
+                gun.ItemId = itemId;
+                gun.ResetPickupCooldown(); // 새로 드롭된 아이템에 쿨다운 재설정
+            }
+        }
+    }
+
+    [PunRPC]
+    public void RPC_DestroyItemByID(int itemId)
+    {
+        SwordItem[] swords = FindObjectsOfType<SwordItem>();
+        foreach (var s in swords)
+        {
+            if (s.ItemId == itemId)
+            {
+                Destroy(s.gameObject);
+                return;
+            }
+        }
+
+        GunItem[] guns = FindObjectsOfType<GunItem>();
+        foreach (var g in guns)
+        {
+            if (g.ItemId == itemId)
+            {
+                Destroy(g.gameObject);
+                return;
+            }
+        }
+    }
+
     private void UpdateWeaponVisibility()
     {
-        // 기존 손에 들고 있던 무기 파괴
         if (currentSpawnedWeapon != null)
-        {
             Destroy(currentSpawnedWeapon);
-            currentSpawnedWeapon = null;
-            gunFirePoint = null;
-        }
+
+        currentSpawnedWeapon = null;
+        gunFirePoint = null;
 
         GameObject prefabToSpawn = null;
 
@@ -305,12 +369,10 @@ public class PlayerPush : MonoBehaviourPun
         else if (currentWeapon == WeaponType.Gun)
             prefabToSpawn = gunPrefab;
 
-        // 새 무기 프리팹 생성 후 handPoint 하위에 배치
         if (prefabToSpawn != null)
         {
             currentSpawnedWeapon = Instantiate(prefabToSpawn, handPoint.position, handPoint.rotation, handPoint);
 
-            // 총인 경우 FirePoint 자동 탐색
             if (currentWeapon == WeaponType.Gun)
             {
                 Transform foundPoint = currentSpawnedWeapon.transform.Find("FirePoint");
@@ -333,6 +395,23 @@ public class PlayerPush : MonoBehaviourPun
 
     [PunRPC]
     public void RPC_EquipWeapon(int weaponTypeIndex)
+    {
+        WeaponType newWeapon = (WeaponType)weaponTypeIndex;
+
+        if (currentWeapon != WeaponType.None && newWeapon != WeaponType.None && currentWeapon != newWeapon)
+        {
+            if (photonView.IsMine)
+            {
+                DropWeapon(currentWeapon);
+            }
+        }
+
+        currentWeapon = newWeapon;
+        UpdateWeaponVisibility();
+    }
+
+    [PunRPC]
+    public void RPC_EquipWeaponDirect(int weaponTypeIndex)
     {
         currentWeapon = (WeaponType)weaponTypeIndex;
         UpdateWeaponVisibility();

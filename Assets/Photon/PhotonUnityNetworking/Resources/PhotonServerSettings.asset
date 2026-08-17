@@ -49,6 +49,9 @@ MonoBehaviour:
   - RPC_EquipWeapon
   - RPC_SpawnBullet
   - RPC_HideItem
+  - RPC_DestroyItemByID
+  - RPC_EquipWeaponDirect
+  - RPC_SpawnDropItem
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
