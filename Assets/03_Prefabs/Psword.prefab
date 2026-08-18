@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6050044798759040282
+--- !u!1 &5215276909039366287
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4915557111431445358}
-  - component: {fileID: 5696146213391694227}
+  - component: {fileID: 3289825604697069579}
+  - component: {fileID: 5173148299917354054}
   m_Layer: 0
-  m_Name: PswordPrefab
+  m_Name: Psword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4915557111431445358
+--- !u!4 &3289825604697069579
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6050044798759040282}
+  m_GameObject: {fileID: 5215276909039366287}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.29678175, w: 0.9549453}
-  m_LocalPosition: {x: 9.8261, y: 14.2207, z: 0}
-  m_LocalScale: {x: 0.1689, y: 0.4661, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0.9486873, w: 0.31621587}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -34.529}
---- !u!212 &5696146213391694227
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -143.132}
+--- !u!212 &5173148299917354054
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6050044798759040282}
+  m_GameObject: {fileID: 5215276909039366287}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -81,12 +81,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 3014889647338854172, guid: fdb9685faaee23c43b0fa28c16b5898e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.875, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

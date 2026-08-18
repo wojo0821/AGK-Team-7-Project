@@ -294,7 +294,9 @@ public class PlayerPush : MonoBehaviourPun
     {
         if (weaponToDrop == WeaponType.None) return;
 
-        Vector3 dropPos = transform.position + weaponDropOffset;
+        // 발바닥(transform.position) 대신 손/몸통 위치(handPoint.position)를 기준으로 드롭
+        Vector3 basePosition = (handPoint != null) ? handPoint.position : transform.position;
+        Vector3 dropPos = basePosition + weaponDropOffset;
         int targetWeapon = (int)weaponToDrop;
 
         int uniqueItemId = (int)(Time.time * 1000f) + Random.Range(1, 100000);
@@ -318,14 +320,14 @@ public class PlayerPush : MonoBehaviourPun
             if (sword != null)
             {
                 sword.ItemId = itemId;
-                sword.ResetPickupCooldown(); // 새로 드롭된 아이템에 쿨다운 재설정
+                sword.ResetPickupCooldown();
             }
 
             GunItem gun = spawnedItem.GetComponent<GunItem>();
             if (gun != null)
             {
                 gun.ItemId = itemId;
-                gun.ResetPickupCooldown(); // 새로 드롭된 아이템에 쿨다운 재설정
+                gun.ResetPickupCooldown();
             }
         }
     }
@@ -371,10 +373,18 @@ public class PlayerPush : MonoBehaviourPun
 
         if (prefabToSpawn != null)
         {
-            currentSpawnedWeapon = Instantiate(prefabToSpawn, handPoint.position, handPoint.rotation, handPoint);
+            currentSpawnedWeapon = Instantiate(prefabToSpawn, handPoint.position, Quaternion.identity, handPoint);
 
-            if (currentWeapon == WeaponType.Gun)
+            if (currentWeapon == WeaponType.Sword)
             {
+                // 칼: Z축 -140도 회전
+                currentSpawnedWeapon.transform.localRotation = Quaternion.Euler(0f, 0f, -140f);
+            }
+            else if (currentWeapon == WeaponType.Gun)
+            {
+                // 총: Y축 -180도 회전
+                currentSpawnedWeapon.transform.localRotation = Quaternion.Euler(0f, -180f, 0f);
+
                 Transform foundPoint = currentSpawnedWeapon.transform.Find("FirePoint");
                 gunFirePoint = (foundPoint != null) ? foundPoint : currentSpawnedWeapon.transform;
             }

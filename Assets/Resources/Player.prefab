@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 31135518666321505}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.279, y: 0.359, z: 0}
+  m_LocalPosition: {x: 0.666, y: 0.582, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -454,10 +454,10 @@ MonoBehaviour:
   pushCooldown: 0.8
   pushSpeed: 8
   handPoint: {fileID: 3193205977358345651}
-  swordPrefab: {fileID: 6050044798759040282, guid: 6ab08a183fa2eb948a7e857904411aaa, type: 3}
-  gunPrefab: {fileID: 3895653623656632806, guid: 1a7be4cf8e7aa61429a28e17a6266642, type: 3}
-  swordDropPrefab: {fileID: 6301520859167278758, guid: a6ae76e0c56ec0b4a8031d5340412e2c, type: 3}
-  gunDropPrefab: {fileID: 4242793782129444840, guid: fc8794345eeacc641869a32b7a01af80, type: 3}
+  swordPrefab: {fileID: 5215276909039366287, guid: a344d88fc333ca146857df627e8f4bb7, type: 3}
+  gunPrefab: {fileID: 4712346815549114278, guid: ff7234a5987cefb46a289449f6f70184, type: 3}
+  swordDropPrefab: {fileID: 668530301175293968, guid: 6f6b745a5c11e4848ae6b7dc1465a7ce, type: 3}
+  gunDropPrefab: {fileID: 3429596604081161453, guid: a4a9dc92a0b6a154d8ef1436ec0f5eda, type: 3}
   weaponDropOffset: {x: 0, y: 0, z: 0}
   swordPushRange: 3
   swordPushDistance: 2.2
