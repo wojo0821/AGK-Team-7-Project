@@ -1,3 +1,4 @@
+using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -20,12 +21,17 @@ public class PlayerPush : MonoBehaviourPun
     [SerializeField] private float pushCooldown = 0.8f;
     [SerializeField] private float pushSpeed = 8f;
 
+    [Header("무기 사용 횟수 설정 (인스펙터 조정)")]
+    [SerializeField] private int swordMaxAmmo = 1; // 칼 최대 공격 가능 횟수
+    [SerializeField] private int gunMaxAmmo = 1;   // 총 최대 발사 가능 횟수
+    private int currentWeaponAmmo;                 // 현재 무기의 남은 공격 횟수
+
     [Header("무기 손 위치 및 프리팹 설정")]
     [SerializeField] private Transform handPoint;      // 손 위치 기준점 (Hierarchy의 HandPoint)
     [SerializeField] private GameObject swordPrefab;   // 손에 장착될 칼 프리팹
     [SerializeField] private GameObject gunPrefab;     // 손에 장착될 총 프리팹
 
-    [Header("바닥 드롭용 프리팹 설정 (인스펙터 할당 가능)")]
+    [Header("바닥 드롭용 프리팹 설정")]
     [SerializeField] private GameObject swordDropPrefab; // 바닥 드롭용 칼 프리팹
     [SerializeField] private GameObject gunDropPrefab;   // 바닥 드롭용 총 프리팹
     [SerializeField] private Vector3 weaponDropOffset = Vector3.zero; // 플레이어 몸쪽 오프셋
@@ -33,9 +39,11 @@ public class PlayerPush : MonoBehaviourPun
     [Header("칼(무기) 설정")]
     [SerializeField] private float swordPushRange = 3.0f;
     [SerializeField] private float swordPushDistance = 3.5f;
+    [SerializeField] private float swordSlashDuration = 0.25f; // 칼 휘두르는 애니메이션 시간
 
     [Header("총(무기) 설정")]
     [SerializeField] private float gunPushDistance = 1.0f;
+    [SerializeField] private GameObject bulletPrefab; // 총알 프리팹
 
     [Header("막히는 지형 레이어")]
     [SerializeField] private LayerMask obstacleLayer;
@@ -45,6 +53,7 @@ public class PlayerPush : MonoBehaviourPun
     [SerializeField] private Animator animator;
     private static readonly int PushTriggerHash = Animator.StringToHash("Push");
     private static readonly int IsPushedHash = Animator.StringToHash("IsPushed");
+    private static readonly int SlashTriggerHash = Animator.StringToHash("Slash");
 
     private Rigidbody2D rb;
     private float nextPushTime;
@@ -196,10 +205,27 @@ public class PlayerPush : MonoBehaviourPun
     {
         WeaponType usedWeapon = currentWeapon;
 
-        PlayPushAnimation();
-        photonView.RPC(nameof(RPC_PlayPushAnimation), RpcTarget.Others);
+        // 1. 칼을 장착하고 공격할 때
+        if (usedWeapon == WeaponType.Sword)
+        {
+            // 칼 휘두르기 애니메이션 실행
+            PlaySwordSlashAnimation();
+            photonView.RPC(nameof(RPC_PlaySwordSlashAnimation), RpcTarget.Others);
 
-        if (usedWeapon == WeaponType.Gun)
+            // 밀치기 판정 수행
+            ExecutePushArea(swordPushRange, swordPushDistance);
+
+            // 횟수 1 차감
+            currentWeaponAmmo--;
+
+            // 횟수를 다 썼다면 애니메이션 재생 완료 후 무기 해제
+            if (currentWeaponAmmo <= 0)
+            {
+                StartCoroutine(UnequipWeaponWithDelay(swordSlashDuration));
+            }
+        }
+        // 2. 총을 장착하고 공격할 때
+        else if (usedWeapon == WeaponType.Gun)
         {
             Vector3 spawnPos = (gunFirePoint != null) ? gunFirePoint.position : handPoint.position;
 
@@ -210,91 +236,146 @@ public class PlayerPush : MonoBehaviourPun
                 facingDirection,
                 basePushDistance
             );
-        }
-        else
-        {
-            float targetRange = CurrentPushRange;
-            float targetPushDistance = CurrentPushDistance;
 
-            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, targetRange);
+            // 횟수 1 차감
+            currentWeaponAmmo--;
 
-            PlayerPush closestPlayer = null;
-            float closestDistance = float.MaxValue;
-
-            foreach (Collider2D hit in hits)
+            // 횟수를 다 썼다면 무기 해제
+            if (currentWeaponAmmo <= 0)
             {
-                PlayerPush target = hit.GetComponentInParent<PlayerPush>();
-
-                if (target == null || target == this)
-                    continue;
-
-                float distance = Vector2.Distance(
-                    transform.position,
-                    target.transform.position
-                );
-
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestPlayer = target;
-                }
-            }
-
-            if (closestPlayer != null)
-            {
-                float direction = Mathf.Sign(
-                    closestPlayer.transform.position.x - transform.position.x
-                );
-
-                if (direction != 0f)
-                {
-                    closestPlayer.photonView.RPC(
-                        nameof(RPC_RequestPush),
-                        closestPlayer.photonView.Owner,
-                        direction,
-                        targetPushDistance
-                    );
-                }
+                photonView.RPC(nameof(RPC_EquipWeaponDirect), RpcTarget.All, (int)WeaponType.None);
             }
         }
-
-        if (usedWeapon != WeaponType.None)
+        // 3. 맨손일 때
+        else if (usedWeapon == WeaponType.None)
         {
-            photonView.RPC(nameof(RPC_EquipWeaponDirect), RpcTarget.All, (int)WeaponType.None);
+            // 맨손일 때만 캐릭터 고유의 밀치기 애니메이션 실행
+            PlayPushAnimation();
+            photonView.RPC(nameof(RPC_PlayPushAnimation), RpcTarget.Others);
+
+            // 밀치기 판정 수행
+            ExecutePushArea(basePushRange, basePushDistance);
         }
+    }
+
+    private void ExecutePushArea(float range, float pushDist)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, range);
+
+        PlayerPush closestPlayer = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (Collider2D hit in hits)
+        {
+            PlayerPush target = hit.GetComponentInParent<PlayerPush>();
+
+            if (target == null || target == this)
+                continue;
+
+            float distance = Vector2.Distance(
+                transform.position,
+                target.transform.position
+            );
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestPlayer = target;
+            }
+        }
+
+        if (closestPlayer != null)
+        {
+            float direction = Mathf.Sign(
+                closestPlayer.transform.position.x - transform.position.x
+            );
+
+            if (direction != 0f)
+            {
+                closestPlayer.photonView.RPC(
+                    nameof(RPC_RequestPush),
+                    closestPlayer.photonView.Owner,
+                    direction,
+                    pushDist
+                );
+            }
+        }
+    }
+
+    private IEnumerator UnequipWeaponWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        photonView.RPC(nameof(RPC_EquipWeaponDirect), RpcTarget.All, (int)WeaponType.None);
+    }
+
+    private void PlaySwordSlashAnimation()
+    {
+        if (currentSpawnedWeapon != null)
+        {
+            Animator swordAnim = currentSpawnedWeapon.GetComponent<Animator>();
+            if (swordAnim != null)
+            {
+                swordAnim.SetTrigger(SlashTriggerHash);
+            }
+        }
+    }
+
+    [PunRPC]
+    private void RPC_PlaySwordSlashAnimation()
+    {
+        PlaySwordSlashAnimation();
     }
 
     [PunRPC]
     private void RPC_SpawnBullet(Vector3 spawnPosition, float direction, float pushDist)
     {
-        GameObject bulletObj = new GameObject("GunBullet");
-        bulletObj.transform.position = spawnPosition;
-        bulletObj.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
+        GameObject bulletObj;
 
-        SpriteRenderer sr = bulletObj.AddComponent<SpriteRenderer>();
-        Texture2D texture = new Texture2D(16, 16);
-        for (int x = 0; x < 16; x++)
-            for (int y = 0; y < 16; y++)
-                texture.SetPixel(x, y, Color.white);
-        texture.Apply();
+        if (bulletPrefab != null)
+        {
+            bulletObj = Instantiate(bulletPrefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            bulletObj = new GameObject("GunBullet");
+            bulletObj.transform.position = spawnPosition;
+            bulletObj.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
 
-        sr.sprite = Sprite.Create(texture, new Rect(0, 0, 16, 16), new Vector2(0.5f, 0.5f));
-        sr.color = Color.yellow;
-        sr.sortingOrder = 10;
+            SpriteRenderer sr = bulletObj.AddComponent<SpriteRenderer>();
+            Texture2D texture = new Texture2D(16, 16);
+            for (int x = 0; x < 16; x++)
+                for (int y = 0; y < 16; y++)
+                    texture.SetPixel(x, y, Color.white);
+            texture.Apply();
 
-        CircleCollider2D col2d = bulletObj.AddComponent<CircleCollider2D>();
-        col2d.isTrigger = true;
-        col2d.radius = 0.5f;
+            sr.sprite = Sprite.Create(texture, new Rect(0, 0, 16, 16), new Vector2(0.5f, 0.5f));
+            sr.color = Color.yellow;
+            sr.sortingOrder = 10;
 
-        Bullet bullet = bulletObj.AddComponent<Bullet>();
-        bullet.Init(direction, pushDist, photonView);
+            CircleCollider2D col2d = bulletObj.AddComponent<CircleCollider2D>();
+            col2d.isTrigger = true;
+            col2d.radius = 0.5f;
+
+            bulletObj.AddComponent<Bullet>();
+        }
+
+        if (direction < 0)
+        {
+            Vector3 scale = bulletObj.transform.localScale;
+            bulletObj.transform.localScale = new Vector3(-Mathf.Abs(scale.x), scale.y, scale.z);
+        }
+
+        Bullet bullet = bulletObj.GetComponent<Bullet>();
+        if (bullet != null)
+        {
+            bullet.Init(direction, pushDist, photonView);
+        }
     }
 
     private void DropWeapon(WeaponType weaponToDrop)
     {
         if (weaponToDrop == WeaponType.None) return;
 
-        // 발바닥(transform.position) 대신 손/몸통 위치(handPoint.position)를 기준으로 드롭
         Vector3 basePosition = (handPoint != null) ? handPoint.position : transform.position;
         Vector3 dropPos = basePosition + weaponDropOffset;
         int targetWeapon = (int)weaponToDrop;
@@ -367,9 +448,15 @@ public class PlayerPush : MonoBehaviourPun
         GameObject prefabToSpawn = null;
 
         if (currentWeapon == WeaponType.Sword)
+        {
             prefabToSpawn = swordPrefab;
+            currentWeaponAmmo = swordMaxAmmo; // 칼 장착 시 횟수 설정
+        }
         else if (currentWeapon == WeaponType.Gun)
+        {
             prefabToSpawn = gunPrefab;
+            currentWeaponAmmo = gunMaxAmmo; // 총 장착 시 횟수 설정
+        }
 
         if (prefabToSpawn != null)
         {
@@ -377,12 +464,10 @@ public class PlayerPush : MonoBehaviourPun
 
             if (currentWeapon == WeaponType.Sword)
             {
-                // 칼: Z축 -140도 회전
                 currentSpawnedWeapon.transform.localRotation = Quaternion.Euler(0f, 0f, -140f);
             }
             else if (currentWeapon == WeaponType.Gun)
             {
-                // 총: Y축 -180도 회전
                 currentSpawnedWeapon.transform.localRotation = Quaternion.Euler(0f, -180f, 0f);
 
                 Transform foundPoint = currentSpawnedWeapon.transform.Find("FirePoint");

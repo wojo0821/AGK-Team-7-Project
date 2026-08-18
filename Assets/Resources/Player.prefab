@@ -453,15 +453,19 @@ MonoBehaviour:
   basePushDistance: 1
   pushCooldown: 0.8
   pushSpeed: 8
+  swordMaxAmmo: 1
+  gunMaxAmmo: 1
   handPoint: {fileID: 3193205977358345651}
   swordPrefab: {fileID: 5215276909039366287, guid: a344d88fc333ca146857df627e8f4bb7, type: 3}
   gunPrefab: {fileID: 4712346815549114278, guid: ff7234a5987cefb46a289449f6f70184, type: 3}
   swordDropPrefab: {fileID: 668530301175293968, guid: 6f6b745a5c11e4848ae6b7dc1465a7ce, type: 3}
   gunDropPrefab: {fileID: 3429596604081161453, guid: a4a9dc92a0b6a154d8ef1436ec0f5eda, type: 3}
   weaponDropOffset: {x: 0, y: 0, z: 0}
-  swordPushRange: 3
+  swordPushRange: 1.2
   swordPushDistance: 2.2
+  swordSlashDuration: 0.25
   gunPushDistance: 5
+  bulletPrefab: {fileID: 2989202932653898750, guid: e8d532d28d6b0f942a39115b58fa71e6, type: 3}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 0
