@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip jumpSound; // 점프 사운드
     [Range(0f, 1f)]
-    [SerializeField] private float jumpVolume = 0.3f; // 점프 소리 크기 (기본값 0.3으로 설정)
+    [SerializeField] private float jumpVolume = 0.3f; // 점프 소리 크기 조절
 
     private void Awake()
     {
@@ -47,6 +47,13 @@ public class PlayerController : MonoBehaviour
 
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
+
+        // 내가 아닌 다른 플레이어의 AudioListener를 꺼서 중복 소리 발생 방지
+        AudioListener listener = GetComponent<AudioListener>();
+        if (listener != null)
+        {
+            listener.enabled = view.IsMine;
+        }
 
         if (!view.IsMine)
         {
@@ -103,9 +110,8 @@ public class PlayerController : MonoBehaviour
                 rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
                 rb.gravityScale = gravityScale * 0.6f;
 
-                // 점프 사운드 재생 (자신 및 네트워크 플레이어 전체 동기화)
+                // 내 로컬 화면에서만 점프 소리 재생 (다른 사람에게는 재생되지 않음)
                 PlayJumpSound();
-                view.RPC(nameof(RPC_PlayJumpSound), RpcTarget.Others);
             }
             else if (context.canceled)
             {
@@ -128,6 +134,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     public void OnZoom(InputAction.CallbackContext context)
     {
         if (!view.IsMine || vcam == null) return;
@@ -153,15 +160,8 @@ public class PlayerController : MonoBehaviour
     {
         if (audioSource != null && jumpSound != null)
         {
-            // 배율(jumpVolume)을 두 번째 인자로 전달하여 소리 크기를 감소시킴
             audioSource.PlayOneShot(jumpSound, jumpVolume);
         }
-    }
-
-    [PunRPC]
-    private void RPC_PlayJumpSound()
-    {
-        PlayJumpSound();
     }
 
     private void FixedUpdate()
