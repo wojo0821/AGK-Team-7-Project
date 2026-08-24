@@ -402,6 +402,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1628253018888023158}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnZoom
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 2e00121a-6122-4fc7-a4c0-6f245c41f32c
+    m_ActionName: 'Player/Zoom[/Mouse/scroll/up,/Mouse/scroll/down]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: 
@@ -421,6 +437,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterMove
   animator: {fileID: 5784493512330822586}
   speed: 5.5
+  vcam: {fileID: 0}
+  zoomSpeed: 1
+  zoomSmoothSpeed: 10
+  minZoom: 5
+  maxZoom: 18
   movementInput: {x: 0, y: 0}
   groundCheck: {fileID: 7918236388401690907}
   groundCheckSize: {x: 0.63, y: 0.23}
