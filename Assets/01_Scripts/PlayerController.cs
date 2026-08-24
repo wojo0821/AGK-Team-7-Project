@@ -13,6 +13,15 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float speed = 14f;
 
+    [Header("Camera Zoom")]
+    [SerializeField] private Unity.Cinemachine.CinemachineCamera vcam;
+    [SerializeField] private float zoomSpeed = 1f;
+    [SerializeField] private float zoomSmoothSpeed = 10f;
+    [SerializeField] private float minZoom = 5f;
+    [SerializeField] private float maxZoom = 18f;
+    private float targetZoom;
+    private float currentZoom;
+
     [Header("Debug Status")]
     [SerializeField] private Vector2 movementInput;
     private PhotonView view;
@@ -49,10 +58,13 @@ public class PlayerController : MonoBehaviour
         // 시네마 카메라 따라오게 (Cinemachine 3.x 대응)
         if (view.IsMine)
         {
-            var vcam = FindFirstObjectByType<Unity.Cinemachine.CinemachineCamera>();
+            vcam = FindFirstObjectByType<Unity.Cinemachine.CinemachineCamera>();
             if (vcam != null)
             {
                 vcam.Target.TrackingTarget = this.transform;
+
+                targetZoom = vcam.Lens.OrthographicSize;
+                currentZoom = targetZoom;
             }
             else
             {
@@ -114,6 +126,26 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    public void OnZoom(InputAction.CallbackContext context)
+    {
+        if (!view.IsMine || vcam == null) return;
+
+        if (context.performed)
+        {
+            Vector2 scroll = context.ReadValue<Vector2>();
+
+            if (scroll.y > 0)
+            {
+                targetZoom -= zoomSpeed;
+            }
+            else if (scroll.y < 0)
+            {
+                targetZoom += zoomSpeed;
+            }
+
+            targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
+        }
+    }
 
     private void PlayJumpSound()
     {
@@ -142,6 +174,13 @@ public class PlayerController : MonoBehaviour
         if (animator != null)
         {
             animator.SetInteger("X", (int)movementInput.x);
+        }
+        if (vcam != null)
+        {
+            currentZoom = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * zoomSmoothSpeed);
+            var lens = vcam.Lens;
+            lens.OrthographicSize = currentZoom;
+            vcam.Lens = lens;
         }
     }
 
