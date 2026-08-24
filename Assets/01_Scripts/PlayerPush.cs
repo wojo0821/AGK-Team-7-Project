@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(PhotonView))]
+[RequireComponent(typeof(AudioSource))]
 public class PlayerPush : MonoBehaviourPun
 {
     public enum WeaponType
@@ -14,6 +15,19 @@ public class PlayerPush : MonoBehaviourPun
         Sword,
         Gun
     }
+
+    private enum SoundType
+    {
+        Push,  // 주먹
+        Sword, // 검
+        Gun    // 총
+    }
+
+    [Header("사운드 설정")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip pushSound;  // 주먹 사운드
+    [SerializeField] private AudioClip swordSound; // 검 사운드
+    [SerializeField] private AudioClip gunSound;   // 총 사운드
 
     [Header("기본 밀치기 설정")]
     [SerializeField] private float basePushRange = 1.2f;
@@ -110,6 +124,9 @@ public class PlayerPush : MonoBehaviourPun
 
         if (handPoint == null)
             handPoint = transform;
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -205,28 +222,30 @@ public class PlayerPush : MonoBehaviourPun
     {
         WeaponType usedWeapon = currentWeapon;
 
-        // 1. 칼을 장착하고 공격할 때
+        // 1. 칼을 장착하고 공격할 때 (검 사운드)
         if (usedWeapon == WeaponType.Sword)
         {
-            // 칼 휘두르기 애니메이션 실행
+            PlaySound(swordSound);
+            photonView.RPC(nameof(RPC_PlaySound), RpcTarget.Others, (int)SoundType.Sword);
+
             PlaySwordSlashAnimation();
             photonView.RPC(nameof(RPC_PlaySwordSlashAnimation), RpcTarget.Others);
 
-            // 밀치기 판정 수행
             ExecutePushArea(swordPushRange, swordPushDistance);
 
-            // 횟수 1 차감
             currentWeaponAmmo--;
 
-            // 횟수를 다 썼다면 애니메이션 재생 완료 후 무기 해제
             if (currentWeaponAmmo <= 0)
             {
                 StartCoroutine(UnequipWeaponWithDelay(swordSlashDuration));
             }
         }
-        // 2. 총을 장착하고 공격할 때
+        // 2. 총을 장착하고 공격할 때 (총 사운드)
         else if (usedWeapon == WeaponType.Gun)
         {
+            PlaySound(gunSound);
+            photonView.RPC(nameof(RPC_PlaySound), RpcTarget.Others, (int)SoundType.Gun);
+
             Vector3 spawnPos = (gunFirePoint != null) ? gunFirePoint.position : handPoint.position;
 
             photonView.RPC(
@@ -237,25 +256,48 @@ public class PlayerPush : MonoBehaviourPun
                 basePushDistance
             );
 
-            // 횟수 1 차감
             currentWeaponAmmo--;
 
-            // 횟수를 다 썼다면 무기 해제
             if (currentWeaponAmmo <= 0)
             {
                 photonView.RPC(nameof(RPC_EquipWeaponDirect), RpcTarget.All, (int)WeaponType.None);
             }
         }
-        // 3. 맨손일 때
+        // 3. 맨손일 때 (주먹 사운드)
         else if (usedWeapon == WeaponType.None)
         {
-            // 맨손일 때만 캐릭터 고유의 밀치기 애니메이션 실행
+            PlaySound(pushSound);
+            photonView.RPC(nameof(RPC_PlaySound), RpcTarget.Others, (int)SoundType.Push);
+
             PlayPushAnimation();
             photonView.RPC(nameof(RPC_PlayPushAnimation), RpcTarget.Others);
 
-            // 밀치기 판정 수행
             ExecutePushArea(basePushRange, basePushDistance);
         }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    [PunRPC]
+    private void RPC_PlaySound(int soundTypeIndex)
+    {
+        SoundType type = (SoundType)soundTypeIndex;
+        AudioClip clipToPlay = null;
+
+        switch (type)
+        {
+            case SoundType.Push: clipToPlay = pushSound; break;
+            case SoundType.Sword: clipToPlay = swordSound; break;
+            case SoundType.Gun: clipToPlay = gunSound; break;
+        }
+
+        PlaySound(clipToPlay);
     }
 
     private void ExecutePushArea(float range, float pushDist)
@@ -450,12 +492,12 @@ public class PlayerPush : MonoBehaviourPun
         if (currentWeapon == WeaponType.Sword)
         {
             prefabToSpawn = swordPrefab;
-            currentWeaponAmmo = swordMaxAmmo; // 칼 장착 시 횟수 설정
+            currentWeaponAmmo = swordMaxAmmo;
         }
         else if (currentWeapon == WeaponType.Gun)
         {
             prefabToSpawn = gunPrefab;
-            currentWeaponAmmo = gunMaxAmmo; // 총 장착 시 횟수 설정
+            currentWeaponAmmo = gunMaxAmmo;
         }
 
         if (prefabToSpawn != null)

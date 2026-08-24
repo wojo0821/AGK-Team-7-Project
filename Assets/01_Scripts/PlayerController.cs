@@ -2,6 +2,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -12,11 +13,10 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float speed = 14f;
 
-    
     [Header("Debug Status")]
     [SerializeField] private Vector2 movementInput;
     private PhotonView view;
-    
+
     [Header("Jump")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.2f, 0.2f);
@@ -24,11 +24,18 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private float gravityScale;
 
+    [Header("Sound")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip jumpSound; // 점프 사운드
+
     private void Awake()
     {
         view = GetComponent<PhotonView>();
         rb = GetComponent<Rigidbody2D>();
         gravityScale = rb.gravityScale;
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
 
         if (!view.IsMine)
         {
@@ -36,6 +43,7 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
         }
     }
+
     private void Start()
     {
         // 시네마 카메라 따라오게 (Cinemachine 3.x 대응)
@@ -69,15 +77,21 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     public void OnJump(InputAction.CallbackContext context)
     {
         isGrounded = Physics2D.OverlapBox(groundCheck.position, groundCheckSize, 0f, LayerMask.GetMask("Ground"));
+
         if (view.IsMine)
         {
             if (context.started && isGrounded)
             {
                 rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
                 rb.gravityScale = gravityScale * 0.6f;
+
+                // 점프 사운드 재생 (자신 및 네트워크 플레이어 전체 동기화)
+                PlayJumpSound();
+                view.RPC(nameof(RPC_PlayJumpSound), RpcTarget.Others);
             }
             else if (context.canceled)
             {
@@ -85,6 +99,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     public void OnSprint(InputAction.CallbackContext context)
     {
         if (view.IsMine)
@@ -98,6 +113,20 @@ public class PlayerController : MonoBehaviour
                 speed -= 2f;
             }
         }
+    }
+
+    private void PlayJumpSound()
+    {
+        if (audioSource != null && jumpSound != null)
+        {
+            audioSource.PlayOneShot(jumpSound);
+        }
+    }
+
+    [PunRPC]
+    private void RPC_PlayJumpSound()
+    {
+        PlayJumpSound();
     }
 
     private void FixedUpdate()
@@ -115,6 +144,7 @@ public class PlayerController : MonoBehaviour
             animator.SetInteger("X", (int)movementInput.x);
         }
     }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
