@@ -1,17 +1,18 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using TMPro; // TextMeshPro를 사용할 경우 (일반 Text라면 UnityEngine.UI 사용)
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(PhotonView))]
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
     [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI readyStatusText; // "준비 완료: 0 / 0" 텍스트
-    [SerializeField] private Button readyButton;              // 준비 버튼
-    [SerializeField] private TextMeshProUGUI readyButtonText; // 버튼 텍스트 ("준비" / "준비 취소")
-    [SerializeField] private GameObject readyUIPanel;         // 준비 UI 전체 패널 (게임 시작 시 숨김용)
+    [SerializeField] private TextMeshProUGUI readyStatusText;
+    [SerializeField] private Button readyButton;
+    [SerializeField] private TextMeshProUGUI readyButtonText;
+    [SerializeField] private GameObject readyUIPanel;
 
     private PhotonView pv;
     private bool isReady = false;
@@ -49,18 +50,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Joined Room");
-        // 방에 들어왔을 때 내 초기 상태(IsReady = false) 설정 및 UI 갱신
         SetReadyStatus(false);
         UpdateReadyUI();
     }
 
-    // 플레이어가 새로 들어왔을 때 UI 갱신
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         UpdateReadyUI();
     }
 
-    // 플레이어가 나갔을 때 UI 갱신 및 방장이 체크
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         UpdateReadyUI();
@@ -70,14 +68,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // 누군가 준비 상태(CustomProperties)를 바꿨을 때 자동 호출
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
         if (changedProps.ContainsKey("IsReady"))
         {
             UpdateReadyUI();
 
-            // 방장(MasterClient)이 전원 준비 완료 여부 검사
             if (PhotonNetwork.IsMasterClient && !hasSpawned)
             {
                 CheckAllPlayersReady();
@@ -85,15 +81,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // UI '준비' 버튼 OnClick에 연결할 함수
     public void OnClickReady()
     {
         if (!PhotonNetwork.InRoom || hasSpawned) return;
 
-        isReady = !isReady; // 준비 상태 토글
+        isReady = !isReady;
         SetReadyStatus(isReady);
 
-        // 버튼 텍스트 변경
         if (readyButtonText != null)
         {
             readyButtonText.text = isReady ? "준비 취소" : "준비";
@@ -106,7 +100,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
-    // 준비된 플레이어 수 계산 및 UI 텍스트 갱신
     private void UpdateReadyUI()
     {
         if (!PhotonNetwork.InRoom) return;
@@ -128,22 +121,22 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // 방장만 검사: 전원 준비 완료 시 시작
     private void CheckAllPlayersReady()
     {
-        // 최소 1명 이상 있고 전원 준비 상태인지 확인
         if (PhotonNetwork.PlayerList.Length == 0) return;
 
         foreach (Player p in PhotonNetwork.PlayerList)
         {
             if (!p.CustomProperties.TryGetValue("IsReady", out object ready) || !(bool)ready)
             {
-                return; // 아직 준비 안 된 플레이어가 있음
+                return;
             }
         }
 
-        // 전원 준비 완료 -> 모든 클라이언트에서 스폰 RPC 실행
-        pv.RPC(nameof(RPC_SpawnAllPlayers), RpcTarget.All);
+        if (pv != null)
+        {
+            pv.RPC(nameof(RPC_SpawnAllPlayers), RpcTarget.All);
+        }
     }
 
     [PunRPC]
@@ -152,13 +145,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if (hasSpawned) return;
         hasSpawned = true;
 
-        // 준비 UI 창 숨기기
         if (readyUIPanel != null)
         {
             readyUIPanel.SetActive(false);
         }
 
         SpawnPlayer();
+
+        // ★ 전원 준비 완료로 게임 시작될 때 용암 시작!
+        FindFirstObjectByType<Lava>()?.StartLava();
     }
 
     public void SpawnPlayer()
