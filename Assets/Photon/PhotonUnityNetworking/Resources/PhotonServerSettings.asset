@@ -53,6 +53,7 @@ MonoBehaviour:
   - RPC_EquipWeaponDirect
   - RPC_SpawnDropItem
   - RPC_PlaySwordSlashAnimation
+  - RPC_SpawnAllPlayers
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
