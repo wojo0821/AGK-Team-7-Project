@@ -10,11 +10,7 @@ public class Lava : MonoBehaviourPun, IPunObservable
     [Header("Lava Audio Settings")]
     [SerializeField] private AudioClip lavaSound;
     [Range(0f, 1f)]
-    [SerializeField] private float maxVolume = 0.3f; // 볼륨 기본값을 0.3으로 낮춤 (원하는대로 조절 가능)
-
-    [Header("3D Sound Settings")]
-    [SerializeField] private float minDistance = 2f;  // 이 거리 안에서는 소리가 최대 크기(maxVolume)로 들림
-    [SerializeField] private float maxDistance = 20f; // 이 거리보다 멀어지면 소리가 들리지 않음
+    [SerializeField] private float maxVolume = 0.3f; // 용암 소리 크기 조절
 
     private AudioSource audioSource;
 
@@ -51,22 +47,17 @@ public class Lava : MonoBehaviourPun, IPunObservable
             audioSource.playOnAwake = false;
             audioSource.volume = maxVolume;
 
-            // --- 3D 사운드(거리 감소) 핵심 설정 ---
-            audioSource.spatialBlend = 1.0f; // 1.0 = 완전한 3D 사운드 적용
-            audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // 거리에 따라 자연스럽게 감소
-            audioSource.minDistance = minDistance;
-            audioSource.maxDistance = maxDistance;
+            // 용암 전체 영역에서 화면 어디서든 균일하게 들리도록 완전 2D 처리
+            audioSource.spatialBlend = 0f;
         }
     }
 
-    // 인스펙터에서 값을 수정했을 때 바로 적용되도록 처리
     private void OnValidate()
     {
         if (audioSource != null)
         {
             audioSource.volume = maxVolume;
-            audioSource.minDistance = minDistance;
-            audioSource.maxDistance = maxDistance;
+            audioSource.spatialBlend = 0f;
         }
     }
 

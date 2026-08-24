@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     [Header("Sound")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip jumpSound; // 점프 사운드
+    [Range(0f, 1f)]
+    [SerializeField] private float jumpVolume = 0.3f; // 점프 소리 크기 (기본값 0.3으로 설정)
 
     private void Awake()
     {
@@ -151,7 +153,8 @@ public class PlayerController : MonoBehaviour
     {
         if (audioSource != null && jumpSound != null)
         {
-            audioSource.PlayOneShot(jumpSound);
+            // 배율(jumpVolume)을 두 번째 인자로 전달하여 소리 크기를 감소시킴
+            audioSource.PlayOneShot(jumpSound, jumpVolume);
         }
     }
 

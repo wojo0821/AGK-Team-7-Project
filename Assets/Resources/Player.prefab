@@ -448,7 +448,8 @@ MonoBehaviour:
   groundCheckSize: {x: 0.63, y: 0.23}
   jumpForce: 15
   audioSource: {fileID: 3163583085829976274}
-  jumpSound: {fileID: 8300000, guid: 2ba1e4851617c7544a963790a15de9ad, type: 3}
+  jumpSound: {fileID: 8300000, guid: 7e42dbb198a0bcc43b5d1ad7fcdd89c6, type: 3}
+  jumpVolume: 0.3
 --- !u!114 &-3722729496493864331
 MonoBehaviour:
   m_ObjectHideFlags: 0

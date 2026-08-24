@@ -16775,7 +16775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Lava
   bottomSprite: {fileID: 1242372538}
   lavaSound: {fileID: 8300000, guid: d50c9bd8b299e074386c4f4a1bb7487d, type: 3}
-  maxVolume: 1
+  maxVolume: 0.302
   riseSpeed: 0.5
   maxHeight: 500
   isRising: 0
@@ -16832,7 +16832,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.308
   m_Pitch: 1
   Loop: 0
   Mute: 0
