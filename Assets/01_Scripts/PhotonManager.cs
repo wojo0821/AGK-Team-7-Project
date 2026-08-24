@@ -27,7 +27,24 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.SendRate = 30;
         PhotonNetwork.SerializationRate = 30;
-        PhotonNetwork.ConnectUsingSettings();
+        // 1. 이미 마스터 서버에 연결되어 있는 상태라면 바로 매칭 시작!
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            if (PhotonNetwork.InRoom)
+            {
+                // 혹시 이전 방에 남아있다면 방을 먼저 나감
+                PhotonNetwork.LeaveRoom();
+            }
+            else
+            {
+                PhotonNetwork.JoinRandomRoom();
+            }
+        }
+        else
+        {
+            // 2. 서버 연결이 완전히 끊겨있을 때만 새로 접속
+            PhotonNetwork.ConnectUsingSettings();
+        }
     }
 
     public override void OnConnectedToMaster()

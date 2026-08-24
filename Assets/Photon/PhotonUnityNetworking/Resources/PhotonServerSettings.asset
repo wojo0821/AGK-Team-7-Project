@@ -58,6 +58,7 @@ MonoBehaviour:
   - RPC_SyncLavaSpeed
   - RPC_PlayJumpSound
   - RPC_PlaySound
+  - RPC_GameOverAndLeave
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0
