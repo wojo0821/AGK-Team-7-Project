@@ -448,7 +448,7 @@ MonoBehaviour:
   groundCheckSize: {x: 0.63, y: 0.23}
   jumpForce: 15
   audioSource: {fileID: 3163583085829976274}
-  jumpSound: {fileID: 8300000, guid: 23ea89753e560ed4fac381f2aa8349a3, type: 3}
+  jumpSound: {fileID: 8300000, guid: 2ba1e4851617c7544a963790a15de9ad, type: 3}
 --- !u!114 &-3722729496493864331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -475,8 +475,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPush
   audioSource: {fileID: 3163583085829976274}
   pushSound: {fileID: 8300000, guid: 41057e998fd243e4596911925e0f87d0, type: 3}
-  swordSound: {fileID: 8300000, guid: 5a42d39e280edbd49a5664d90f22a4d0, type: 3}
-  gunSound: {fileID: 8300000, guid: 1fda63df643a5bf4ea18c6f0bb10570a, type: 3}
+  swordSound: {fileID: 8300000, guid: 575fa5f0acb28a246893a856c4b9f03d, type: 3}
+  gunSound: {fileID: 8300000, guid: b22256bf00ea8204aa5e1861ae5c61ed, type: 3}
   basePushRange: 1.2
   basePushDistance: 1
   pushCooldown: 0.8
