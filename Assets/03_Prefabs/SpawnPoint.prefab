@@ -155,6 +155,7 @@ MonoBehaviour:
   respawnPoint: {fileID: 3076359080922591720}
   flagRenderer: {fileID: 1856112009029485428}
   activatedSprite: {fileID: 0}
+  checkpointSound: {fileID: 8300000, guid: d3872a48573c7814993f260538aaabba, type: 3}
 --- !u!95 &5206307418663548831
 Animator:
   serializedVersion: 7
